@@ -1,4 +1,4 @@
-<?
+<?php
 /* Author: Benedikt Sauter <sauter@embedded-projects.net> 2007
  *
  * Hier werden alle Plugins, Widgets usw instanziert die

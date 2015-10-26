@@ -1,4 +1,4 @@
-<?
+<?php
 /* Author: Benedikt Sauter, sauter@sistecs.de, 2007
  * Player for PHP Applications
  */

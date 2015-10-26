@@ -1,4 +1,4 @@
-<?
+<?php
 
 /****************************************************************************
  1. zu jedem Template muss es in einem anderen Template eine Variable geben

@@ -1,4 +1,4 @@
-<?
+<?php
 /* Author: Benedikt Sauter <sauter@sistecs.de> 2007
  *
  * Dies ist sozusagen der Zuendschluessel fuer die Anwendung

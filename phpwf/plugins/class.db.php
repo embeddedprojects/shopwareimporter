@@ -1,33 +1,74 @@
-<?
+<?php
 /// Interface for communication with a MySQL Database
 class DB{
+  var $dbname;
+  var $connection;
 
   function DB($dbhost,$dbname,$dbuser,$dbpass,&$app="")
   {
     $this->app = &$app;
+    $this->dbname=$dbname;
 
-    mysql_connect($dbhost, $dbuser, $dbpass);
-    mysql_select_db($dbname);
+    $this->connection = mysqli_connect($dbhost, $dbuser, $dbpass);
+    mysqli_select_db($this->connection,$dbname);
 
-    mysql_query("SET NAMES 'utf8'");
-    mysql_query("SET CHARACTER SET 'utf8'");
+    mysqli_query($this->connection,"SET NAMES 'utf8'");
+    mysqli_query($this->connection,"SET SESSION SQL_MODE := ''");
+    mysqli_query($this->connection,"SET CHARACTER SET 'utf8'");
+    mysqli_query($this->connection,'SET lc_time_names = "de_DE" ');
+  }
+
+  function GetVersion()
+  {
+    $version_string = mysqli_get_server_info($this->connection);
+    $version_string = substr($version_string,0,3);
+    $version_string = str_replace('.','',$version_string);
+    return $version_string;
+  }
+
+  function Close()
+  {
+    mysqli_close($this->connection);
+  }
+
+	function SelectDB($database)
+  {
+    mysqli_select_db($database);
   }
 	
   function free(){
     // Speicher freimachen
-    mysql_free_result($this->_result);
+    mysqli_free_result($this->_result);
+  }
+
+	  function ColumnExists($table, $column)
+  {
+    if($table=='' || $column=='')
+      return false;
+
+		$exists = $this->Select("SELECT COUNT(*)
+FROM information_schema.columns
+WHERE table_schema = '{$this->dbname}' 
+AND table_name = '$table' AND column_name = '$column'");
+		return $exists;
   }
 
   function Select($sql){
-    if(mysql_query($sql)){
-      $this->results = mysql_query($sql);
+    if(mysqli_query($this->connection,$sql)){
+      $this->results = mysqli_query($this->connection,$sql);
+ 			/**
+       * Abbrechen query mit SET beginnt
+       */
+      if (substr(strtolower($sql),0,3) == 'set') {
+        return "";
+      }
       $count = 0;
       $data = array();
-      while( $row = mysql_fetch_array($this->results)){
+      while( $row = mysqli_fetch_array($this->results)){
 	$data[$count] = $row;
 	$count++;
       }
-      mysql_free_result($this->results);
+      mysqli_free_result($this->results);
     }
     if(count($data) == 1)  $data = $data[0][0];
     if(count($data) < 1) $data="";
@@ -35,33 +76,34 @@ class DB{
   }
  
   function SelectArr($sql){
-    //if(mysql_query($sql)){
+
+    //if(mysqli_query($this->connection,$sql)){
     if(1){
-      $this->results = mysql_query($sql);
+      $this->results = mysqli_query($this->connection,$sql);
       $count = 0;
       $data = array();
-      while( $row = mysql_fetch_array($this->results)){
-	unset($ArrData); 
-	// erstelle datensatz array
-	foreach($row as $key=>$value){
-	  if(!is_numeric($key))$ArrData[$key]=$value;
-	}
-	$data[$count] = $ArrData;
+      while( $row = @mysqli_fetch_array($this->results)){
+				unset($ArrData); 
+				// erstelle datensatz array
+				foreach($row as $key=>$value){
+	  			if(!is_numeric($key))$ArrData[$key]=$value;
+				}
+				$data[$count] = $ArrData;
         $count++;
       }
-      mysql_free_result($this->results);
+      @mysqli_free_result($this->results);
     }
     return $data;
   }
 	
-  function Result($sql){ return mysql_result(mysql_query($sql), 0);}
+  function Result($sql){ return mysqli_result(mysqli_query($this->connection,$sql), 0);}
 
-  function GetInsertID(){ return mysql_insert_id();}
+  function GetInsertID(){ return mysqli_insert_id($this->connection);}
 
   function GetArray($sql){
     $i=0;
-    $result = mysql_query($sql);
-    while($row = mysql_fetch_assoc($result)) {
+    $result = mysqli_query($this->connection,$sql);
+    while($row = mysqli_fetch_assoc($result)) {
       foreach ($row as $key=>$value){
 	$tmp[$i][$key]=$value;
       }
@@ -70,29 +112,32 @@ class DB{
     return $tmp;
   }
 
-  function Insert($sql){ $this->LogSQL($sql,"insert"); return mysql_query($sql); }
-  function InsertWithoutLog($sql){ return mysql_query($sql); }
-  function Update($sql){ $this->LogSQL($sql,"update"); return mysql_query($sql); }
-  function Delete($sql){ $this->LogSQL($sql,"delete"); return mysql_query($sql); }
+  function Insert($sql){ $this->LogSQL($sql,"insert"); return mysqli_query($this->connection,$sql); }
+  function InsertWithoutLog($sql){ return mysqli_query($this->connection,$sql); }
+  function Update($sql){ $this->LogSQL($sql,"update"); return mysqli_query($this->connection,$sql); }
+  function UpdateWithoutLog($sql){ return mysqli_query($this->connection,$sql); }
+  function Delete($sql){ $this->LogSQL($sql,"delete"); return mysqli_query($this->connection,$sql); }
 
   function LogSQL($sql,$befehl)
   {
+/*
     $name = $this->app->User->GetName();
     $sql = base64_encode($sql);
     $serial = base64_encode(serialize($this->app->Secure));
-    mysql_query("INSERT INTO logdatei (id,name,befehl,statement,app,zeit) 
+    mysqli_query($this->connection,"INSERT INTO logdatei (id,name,befehl,statement,app,zeit) 
       VALUES ('','$name','$befehl','$sql','$serial',NOW())");
+*/
   }
 
   function Count($sql){
-    if(mysql_query($sql)){	
-      return mysql_num_rows(mysql_query($sql));
+    if(mysqli_query($this->connection,$sql)){	
+      return mysqli_num_rows(mysqli_query($this->connection,$sql));
     }
     else {return 0;}
   }
 
   function CheckTableExistence($table){
-    $result = mysql_query("SELECT * FROM $table");
+    $result = mysqli_query($this->connection,"SELECT * FROM $table LIMIT 1");
     if (!$result) {
       return false;
       } else { return true; }
@@ -102,13 +147,13 @@ class DB{
   function CheckColExistence($table,$col)
   {
     if($this->CheckTableExistence($table)){
-      $result = mysql_query("SHOW COLUMNS FROM $table");
+      $result = mysqli_query($this->connection,"SHOW COLUMNS FROM $table");
       if (!$result) {
-	echo 'Could not run query: ' . mysql_error();
+	echo 'Could not run query: ' . mysqli_error();
 	exit;
       }
-      if (mysql_num_rows($result) > 0) {
-	while ($row = mysql_fetch_assoc($result)) {
+      if (mysqli_num_rows($result) > 0) {
+	while ($row = mysqli_fetch_assoc($result)) {
 	  if($row[Field]==$col)
 	    return true;
 	}
@@ -122,13 +167,13 @@ class DB{
   function GetColArray($table)
   {
     if($this->CheckTableExistence($table)){
-      $result = mysql_query("SHOW COLUMNS FROM $table");
+      $result = mysqli_query($this->connection,"SHOW COLUMNS FROM $table");
       if (!$result) {
-	echo 'Could not run query: ' . mysql_error();
+	echo 'Could not run query: ' . mysqli_error();
 	exit;
       }
-      if (mysql_num_rows($result) > 0) {
-	while ($row = mysql_fetch_assoc($result)) {
+      if (mysqli_num_rows($result) > 0) {
+	while ($row = mysqli_fetch_assoc($result)) {
 	  $ret[]=$row[Field];
 	}
 	return $ret;
@@ -140,13 +185,13 @@ class DB{
   function GetColAssocArray($table)
   {
     if($this->CheckTableExistence($table)){
-      $result = mysql_query("SHOW COLUMNS FROM $table");
+      $result = mysqli_query($this->connection,"SHOW COLUMNS FROM $table");
       if (!$result) {
-	echo 'Could not run query: ' . mysql_error();
+	echo 'Could not run query: ' . mysqli_error();
 	exit;
       }
-      if (mysql_num_rows($result) > 0) {
-	while ($row = mysql_fetch_assoc($result)) {
+      if (mysqli_num_rows($result) > 0) {
+	while ($row = mysqli_fetch_assoc($result)) {
 	  $ret[$row[Field]]="";
 	}
 	return $ret;
@@ -181,6 +226,7 @@ class DB{
       $selection = '*';
     else 
     {
+			$selection = '';
       foreach($cols as $value)
       {
 	if(!$firstcol)
@@ -199,9 +245,38 @@ class DB{
 
 
   function Query($query){
-    return mysql_query($query);
+    return mysqli_query($this->connection,$query);
   }
 
+  function Fetch_Array($sql) {
+    return mysqli_fetch_array($sql);
+  }
+
+
+  function MysqlCopyRow($TableName, $IDFieldName, $IDToDuplicate) 
+  {
+    if ($TableName AND $IDFieldName AND $IDToDuplicate > 0) {
+      $sql = "SELECT * FROM $TableName WHERE $IDFieldName = $IDToDuplicate";
+      $result = @mysqli_query($this->connection,$sql);
+      if ($result) {
+	$sql = "INSERT INTO $TableName SET ";
+	$row = mysqli_fetch_array($result);
+	$RowKeys = array_keys($row);
+	$RowValues = array_values($row);
+	for ($i=3;$i<count($RowKeys);$i+=2) {
+	  if ($i!=3) { $sql .= ", "; }
+	  $sql .= $RowKeys[$i] . " = '" . $RowValues[$i] . "'";
+	}
+	$result = @mysqli_query($this->connection,$sql);
+      }
+    }
+    return $this->GetInsertID();
+  }
+  
+  function escape_string($string)
+  {
+    return mysqli_real_escape_string($this->connection, $string);
+  }
 }
 
 
