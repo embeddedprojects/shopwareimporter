@@ -1,6 +1,5 @@
 <?php
 
-
 class Import 
 {
   //var $error = array();
@@ -41,7 +40,7 @@ class Import
 
     //  $this->DumpVar($this->app->Secure->GetGET("action"));
     // token pruefen!!! sonst abbruch DIE FOLGENDE ZEILE DARF NIE IM KOMMENTAR STEHEN! SONDERN MUSS AKTIV SEIN
-   $this->CatchRemoteAuth();
+    $this->CatchRemoteAuth();
 
     $this->app->ActionHandlerListen($app);
   }
@@ -51,16 +50,16 @@ class Import
     $params = array(
     'useNumberAsId' => true
     );
-   $result = $this->article = $this->app->client->call('articles/'.$nummer,ApiClient::METHODE_GET, $params);
-   $this->DumpVar($result);
+    $result = $this->article = $this->app->client->call('articles/'.$nummer,ApiClient::METHODE_GET, $params);
+    $this->DumpVar($result);
     $check = strpos($result ,"error:");
 
-   if($check===0)
-   {
+    if($check===0)
+    {
       return null;
-   } else {
-    return $result["data"]["id"];
-   }
+    } else {
+      return $result["data"]["id"];
+    }
   }
 
 
@@ -241,12 +240,13 @@ Embedded Eagle Library
       if($tmp[$i][uebersicht_en]=="") $tmp[$i][uebersicht_en] = $tmp[$i][uebersicht_de];
       if($tmp[$i][beschreibung_en]=="") $tmp[$i][beschreibung_en] = $tmp[$i][beschreibung_de];
 
+      /*
       if($tmp[$i][links_de]!=""){
         $description_long = htmlspecialchars_decode($tmp[$i][uebersicht_de])."<br>".htmlspecialchars_decode($tmp[$i][beschreibung_de])."<br><b>Links:</b><br><br>".htmlspecialchars_decode($tmp[$i][links_de]);
       } else {
         $description_long = htmlspecialchars_decode($tmp[$i][uebersicht_de])."<br>".htmlspecialchars_decode($tmp[$i][beschreibung_de]);
-      }
-
+      }*/
+      $description_long = htmlspecialchars_decode($tmp[$i][uebersicht_de]);
 
       $preis = $tmp[$i][bruttopreis];
       $einkaufspreis = $tmp[$i][einkaufspreis];
@@ -537,7 +537,7 @@ Embedded Eagle Library
   {
     $tmp = $this->CatchRemoteCommand("data");
     $anzahl = 0;
-//    $this->app->DB->Delete("DELETE FROM exportlink WHERE datum < DATE_ADD(NOW(), INTERVAL 5 DAYS)");
+    //$this->app->DB->Delete("DELETE FROM exportlink WHERE datum < DATE_ADD(NOW(), INTERVAL 5 DAYS)");
 
     for($i=0;$i<count($tmp);$i++)
     {
@@ -547,7 +547,7 @@ Embedded Eagle Library
 
       foreach($tmp[$i] as $key=>$value)
       {
-	$this->app->DB->Update("UPDATE exportlink SET $key='$value' WHERE id='$id' LIMIT 1");
+        $this->app->DB->Update("UPDATE exportlink SET $key='$value' WHERE id='$id' LIMIT 1");
       }
 
       $anzahl++;
@@ -572,7 +572,7 @@ Embedded Eagle Library
 
       foreach($tmp[$i] as $key=>$value)
       {
-	$this->app->DB->Update("UPDATE artikelgruppen SET $key='$value' WHERE id='$id' LIMIT 1");
+        $this->app->DB->Update("UPDATE artikelgruppen SET $key='$value' WHERE id='$id' LIMIT 1");
       }
 
       $anzahl++;
@@ -633,22 +633,22 @@ Embedded Eagle Library
     exit;
   }
 
-   //TODO fuer Auftragimport
-  // get checksum list from onlineshop
+  //TODO fuer Auftragimport
+  //get checksum list from onlineshop
   function ImportGetAuftraegeAnzahl()
   {
 
-        // filter nach orderStatusId
-        $filterByOrderStatus = array(
-            array(
-                'property' => 'status',
-                'value'    => 0
-            ),
-        );
-         
-        $params = array(
-            'filter' => $filterByOrderStatus 
-        );
+    // filter nach orderStatusId
+    $filterByOrderStatus = array(
+        array(
+            'property' => 'status',
+            'value'    => 0
+        ),
+    );
+     
+    $params = array(
+        'filter' => $filterByOrderStatus 
+    );
 
     $result = $this->app->client->call('orders', ApiClient::METHODE_GET,$params);
 
@@ -841,16 +841,16 @@ Embedded Eagle Library
        $warenkorb2[lieferadresse_ort]!=$warenkorb[ort] ||
        $warenkorb2[lieferadresse_land]!=$warenkorb[land] ||
        $warenkorb2[lieferadresse_abteilung]!=$warenkorb[abteilung])
-     {
-        $warenkorb[abweichendelieferadresse]="1";
-        $warenkorb[lieferadresse_name]  = $warenkorb2[lieferadresse_name] ;
-        $warenkorb[lieferadresse_ansprechpartner] = $warenkorb2[lieferadresse_ansprechpartner];
-        $warenkorb[lieferadresse_strasse] = $warenkorb2[lieferadresse_strasse];
-        $warenkorb[lieferadresse_plz] = $warenkorb2[lieferadresse_plz];
-        $warenkorb[lieferadresse_ort] = $warenkorb2[lieferadresse_ort];
-        $warenkorb[lieferadresse_land] = $warenkorb2[lieferadresse_land];
-        $warenkorb[lieferadresse_abteilung] = $warenkorb2[lieferadresse_abteilung];
-     } 
+    {
+      $warenkorb[abweichendelieferadresse]="1";
+      $warenkorb[lieferadresse_name]  = $warenkorb2[lieferadresse_name] ;
+      $warenkorb[lieferadresse_ansprechpartner] = $warenkorb2[lieferadresse_ansprechpartner];
+      $warenkorb[lieferadresse_strasse] = $warenkorb2[lieferadresse_strasse];
+      $warenkorb[lieferadresse_plz] = $warenkorb2[lieferadresse_plz];
+      $warenkorb[lieferadresse_ort] = $warenkorb2[lieferadresse_ort];
+      $warenkorb[lieferadresse_land] = $warenkorb2[lieferadresse_land];
+      $warenkorb[lieferadresse_abteilung] = $warenkorb2[lieferadresse_abteilung];
+    } 
        
     //articlelist
         //articleid
@@ -862,7 +862,7 @@ Embedded Eagle Library
                         'name'=>$result[data][details][$i][articleName],
                           'price'=>$result[data][details][$i][price],
                           'quantity'=>$result[data][details][$i][quantity]
-            );
+      );
     }
     
     $warenkorb[articlelist]=$articlearray;
