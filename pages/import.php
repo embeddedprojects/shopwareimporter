@@ -865,6 +865,11 @@ Embedded Eagle Library
       );
     }
     
+    foreach($articlearray as $k => $v)
+    {
+      $articlearray[$k]['price'] = number_format($v,2);
+    }
+    
     $warenkorb[articlelist]=$articlearray;
 
     $tmp[0]['id'] = $warenkorb[auftrag];
