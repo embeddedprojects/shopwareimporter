@@ -1,4 +1,4 @@
-<?
+<?php
     
 //database connection
 class Config {
