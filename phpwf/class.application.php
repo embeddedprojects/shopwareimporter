@@ -48,21 +48,21 @@ class Application
 	$this->http = "http";
 
     
-      $this->Secure         = & new Secure();   // empty $_GET, and $_POST so you
+      $this->Secure         =  new Secure();   // empty $_GET, and $_POST so you
                                                 // have to need the secure layer always
-      $this->FormHandler    = & new FormHandler($this);
-      $this->User           = & new User($this);
-      $this->acl            = & new Acl($this);
-      $this->WF             = & new phpWFAPI($this);
-      $this->WFM            = & new WFMonitor($this);
-      $this->Tpl            = & new TemplateParser();
-      $this->Page           = & new Page($this);
-      $this->String         = & new String();
-      $this->DatabaseForm   = & new DatabaseForm($this);
-      $this->PageBuilder    = & new PageBuilder($this);
-      $this->ObjAPI	    = & new ObjectAPI($this);
-      $this->Widget	    = & new WidgetAPI($this);
-      $this->Table	    = & new Table($this);
+      $this->FormHandler    =  new FormHandler($this);
+      $this->User           =  new User($this);
+      $this->acl            =  new Acl($this);
+      $this->WF             =  new phpWFAPI($this);
+      $this->WFM            =  new WFMonitor($this);
+      $this->Tpl            =  new TemplateParser();
+      $this->Page           =  new Page($this);
+      $this->String         =  new String();
+      $this->DatabaseForm   =  new DatabaseForm($this);
+      $this->PageBuilder    =  new PageBuilder($this);
+      $this->ObjAPI	    =  new ObjectAPI($this);
+      $this->Widget	    =  new WidgetAPI($this);
+      $this->Table	    =  new Table($this);
 
       $this->BuildNavigation = true;
          

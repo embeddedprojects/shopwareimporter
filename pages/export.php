@@ -12,7 +12,7 @@ class Export
   
     $this->app->DefaultActionHandler("list");
   
-    $this->app->ActionHandlerListen(&$app);
+    $this->app->ActionHandlerListen($app);
   }
  
   //www.google.de/merchants/default

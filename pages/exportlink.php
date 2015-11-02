@@ -12,7 +12,7 @@ class Exportlink
 
     $this->app->DefaultActionHandler("list");
     
-    $this->app->ActionHandlerListen(&$app);
+    $this->app->ActionHandlerListen($app);
   }
   
   function ExportlinkNav()

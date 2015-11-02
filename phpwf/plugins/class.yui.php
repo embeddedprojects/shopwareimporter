@@ -64,7 +64,7 @@ class YUI
     $module = $this->app->Secure->GetGET("module");
     $id = $this->app->Secure->GetGET("id");
 
-    $table = new EasyTable(&$this->app);
+    $table = new EasyTable($this->app);
     if($sort)
       $table->Query($sql." ORDER by sort"); 
     else
@@ -162,7 +162,7 @@ class YUI
       $this->app->Tpl->Set(DETAILS.$id,$yui_html);
 
     // aufrufen der uebergebenen funktion
-    $object_for_function->$function_for_content($id,&$this);
+    $object_for_function->$function_for_content($id,$this);
 
     // formular parsen
     $this->app->Tpl->Parse(PANEL.$id,$formtemplate);

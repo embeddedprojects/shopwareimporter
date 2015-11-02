@@ -448,7 +448,7 @@ class FormHandler
     $formaction=$this->app->Secure->GetGET("formaction");
     
     // create simple list fpr repesent the form as data structure 
-    $this->FormList[$formname]->HTMLList = & new SimpleList();
+    $this->FormList[$formname]->HTMLList =  new SimpleList();
   }
 
 
