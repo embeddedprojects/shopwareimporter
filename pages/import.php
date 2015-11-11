@@ -687,7 +687,7 @@ Embedded Eagle Library
 
     $this->app->client->call('orders/'.$auftrag, ApiClient::METHODE_PUT, array(
    // 'paymentStatusId' => $status_zahlung,
-    'orderStatusId' => 12,//$status_versand,
+    'orderStatusId' => 7,//$status_versand,
     'trackingCode' => $tracking
     //'comment' => 'Neuer Kommentar',
     //'transactionId' => '0',
