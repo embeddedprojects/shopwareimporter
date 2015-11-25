@@ -109,7 +109,7 @@ Embedded Eagle Library
       else
         $data['pseudopreis']=$result['data']['mainDetail']['prices'][0]['pseudoPrice']*((100+$result['data']['tax']['tax'])/100);
 
-      $data['pseudolager']=$result['data']['mainDetail']['inStock'];
+      //$data['pseudolager']=$result['data']['mainDetail']['inStock'];
       $data['lieferzeitmanuell']=$result['data']['mainDetail']['shippingTime'];
 
       $this->DumpVar($data);
