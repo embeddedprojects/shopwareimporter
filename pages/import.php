@@ -32,6 +32,7 @@ class Import
     $this->app->ActionHandler("addfilesubjekt","ImportAddFileSubjekt");
     $this->app->ActionHandler("inhalt","ImportInhalt");
     $this->app->ActionHandler("test","ImportTest");
+    $this->app->ActionHandler("partnerlist","ImportPartnerList");
 
     $this->app->DefaultActionHandler("cmd");
 
@@ -60,6 +61,45 @@ class Import
     } else {
       return $result["data"]["id"];
     }
+  }
+
+  function ImportPartnerList()
+  {
+    $tmp = $this->CatchRemoteCommand("data");
+    $this->DumpVar($tmp); // hier alle Datenfelder sehen
+    if(count($tmp) > 0)
+    {
+      foreach($tmp as $key=>$value)
+      {
+        $this->DumpVar("id ".$key);
+        
+        $checkid = $this->app->DB->Select("SELECT id FROM s_emarketing_partner WHERE idcode='".$value['ref']."' AND idcode!='' LIMIT 1");
+        if($checkid<=0)
+        {
+          $this->app->DB->Insert("INSERT INTO s_emarketing_partner (id,idcode,datum,active,userID) VALUES ('','".$value['ref']."',NOW(),1,0)");
+          $checkid = $this->app->DB->GetInsertID();
+        }
+
+        foreach($value as $column=>$cvalue)
+        { 
+          $this->DumpVar(" colum: $column ($cvalue)");
+          switch($column)
+          {
+            case "name": $this->app->DB->Update("UPDATE s_emarketing_partner SET company='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "netto": $this->app->DB->Update("UPDATE s_emarketing_partner SET percent='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "strasse": $this->app->DB->Update("UPDATE s_emarketing_partner SET street='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "email": $this->app->DB->Update("UPDATE s_emarketing_partner SET email='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "telefax": $this->app->DB->Update("UPDATE s_emarketing_partner SET fax='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "telefon": $this->app->DB->Update("UPDATE s_emarketing_partner SET phone='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "ort": $this->app->DB->Update("UPDATE s_emarketing_partner SET city='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "plz": $this->app->DB->Update("UPDATE s_emarketing_partner SET zipcode='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+            case "land": $this->app->DB->Update("UPDATE s_emarketing_partner SET country='$cvalue' WHERE id='$checkid' LIMIT 1");break;
+          }
+        }
+      }
+    }
+    echo $this->SendResponse('ok');
+    exit;
   }
 
 
