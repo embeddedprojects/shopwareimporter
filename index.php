@@ -14,6 +14,7 @@
 // layer 1 -> mechnik steht bereit
 // Melde alle Fehler außer E_NOTICE
 // Dies ist der Vorgabewert in php.ini
+error_reporting(E_ERROR | E_PARSE);
 include("eproosystem.php");
 include("conf/main.conf.php");
 $config = new Config();

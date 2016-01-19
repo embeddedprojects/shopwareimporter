@@ -163,7 +163,7 @@ class TemplateParser {
 
     if($_template!=""){
       //alle template variablen aufuellen mit den werten aus VARARRAY 
-      if(count($this->TEMPLATELIST[$_template]->VARS)>0){ 
+      if(isset($this->TEMPLATELIST[$_template]) && isset($this->TEMPLATELIST[$_template]->VARS) && count($this->TEMPLATELIST[$_template]->VARS)>0){ 
 	foreach ($this->TEMPLATELIST[$_template]->VARS as $key=> $value){
 	  $this->TEMPLATELIST[$_template]->SetVar($key,$this->VARARRAY[$key]);
       }
@@ -190,7 +190,7 @@ class TemplateParser {
 
     if($_template!=""){
       //alle template variablen aufuellen mit den werten aus VARARRAY
-      if(count($this->TEMPLATELIST[$_template]->VARS)>0){ 
+      if(isset($this->TEMPLATELIST[$_template]) && isset($this->TEMPLATELIST[$_template]->VARS) && count($this->TEMPLATELIST[$_template]->VARS)>0){ 
 	foreach ($this->TEMPLATELIST[$_template]->VARS as $key=> $value)
 	{
 	  $this->TEMPLATELIST[$_template]->SetVar($key,$this->VARARRAY[$key]);
@@ -200,12 +200,12 @@ class TemplateParser {
     //ORIGINAL auffuellen
     $tmptpl = $this->TEMPLATELIST[$_template]->ORIGINAL;
     
-    if(count($this->TEMPLATELIST[$_template]->VARS)>0){ 
+    if(isset($this->TEMPLATELIST[$_template]) && isset($this->TEMPLATELIST[$_template]->VARS) && count($this->TEMPLATELIST[$_template]->VARS)>0){ 
       foreach ($this->TEMPLATELIST[$_template]->VARS as $key=>$value)
 	$tmptpl = str_replace("[".$key."]",$value, $tmptpl);
     }
     
-    if(count($this->VARARRAY)>0)
+    if(isset($this->VARARRAY) && count($this->VARARRAY)>0)
       foreach($this->VARARRAY as $key=>$value)
 	$tmptpl = str_replace('['.$key.']',$value,$tmptpl);
     

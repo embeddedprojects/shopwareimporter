@@ -30,12 +30,12 @@ class Secure
 
   function GetGET($name,$rule="",$maxlength="",$sqlcheckoff="")
   {
-    return $this->Syntax($this->GET[$name],$rule,$maxlength,$sqlcheckoff);
+    return $this->Syntax(isset($this->GET[$name])?$this->GET[$name]:'',$rule,$maxlength,$sqlcheckoff);
   }
 
   function GetPOST($name,$rule="",$maxlength="",$sqlcheckoff="")
   {
-    return $this->Syntax($this->POST[$name],$rule,$maxlength,$sqlcheckoff);
+    return $this->Syntax(isset($this->POST[$name])?$this->POST[$name]:'',$rule,$maxlength,$sqlcheckoff);
   }
 
   function GetPOSTArray()
@@ -87,7 +87,7 @@ class Secure
     if($this->GetRegexp($rule)!=""){
       //$v = '/^['.$this->GetRegexp($rule).']+$/';
       $v = $this->GetRegexp($rule);
-      if (eregi($v, $value) )
+      if (preg_match_all('/'.$v.'/i', $value, $teffer) )
       {
 	if($sqlcheckoff=="")
 	  return $value; //mysql_real_escape_string
@@ -109,7 +109,7 @@ class Secure
   function RuleCheck($value,$rule)
   {
     $v = $this->GetRegexp($rule);
-    if (eregi($v, $value) )
+    if (preg_match_all('/'.$v.'/i', $value, $teffer) )
       return true;
     else
       return false;
@@ -125,14 +125,14 @@ class Secure
   // get complete regexp by rule name
   function GetRegexp($rule)
   {
-    $rules = split("\+",$rule);
-
+    $rules = explode("+",$rule);
+    $ret = '';
     foreach($rules as $key)
     {
         // check if rule is last in glue string
-        if($this->rules[$key][type]=="glue")
+        if($this->rules[$key]['type']=="glue")
         {
-          $subrules = split("\+",$this->rules[$key][rule]);
+          $subrules = explode("+",$this->rules[$key]['rule']);
           if(count($subrules)>0)
           {
             foreach($subrules as $subkey)
@@ -141,9 +141,9 @@ class Secure
             }
           }
         }
-        elseif($this->rules[$key][type]=="reg")
+        elseif($this->rules[$key]['type']=="reg")
         {
-          $ret .= $this->rules[$key][rule];
+          $ret .= $this->rules[$key]['rule'];
         }
         else
         {

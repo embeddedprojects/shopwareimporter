@@ -61,13 +61,13 @@ class Player {
     // jetzt noch alles anzeigen
     //$this->app->Tpl->ReadTemplatesFromPath("../../conductor/themes/default/templates/");
     //$this->app->Tpl->ReadTemplatesFromPath("../../conductor/themes/default/templates/");
-    if($this->app->BuildNavigation==true)
+    /*if($this->app->BuildNavigation==true)
       $this->BuildNavigation();
 
     if($this->app->BuildNavigation==true)
       echo $this->app->Tpl->FinalParse('page.tpl');
     else
-      echo $this->app->Tpl->FinalParse('popup.tpl');
+      echo $this->app->Tpl->FinalParse('popup.tpl');*/
   }
 
 }

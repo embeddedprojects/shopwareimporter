@@ -1,27 +1,27 @@
 <?php
 
 //include ("phpwf/engine/class.engine.php");
-include ("phpwf/plugins/class.formhandler.php");
+//include ("phpwf/plugins/class.formhandler.php");
 include ("phpwf/plugins/class.acl.php");
 include ("phpwf/plugins/class.user.php");
 include ("phpwf/plugins/class.page.php");
 include ("phpwf/plugins/class.phpwfapi.php");
 include ("phpwf/plugins/class.databaseform.php");
-include ("phpwf/plugins/class.templateparser.php");
+//include ("phpwf/plugins/class.templateparser.php");
 include ("phpwf/plugins/class.secure.php");
 include ("phpwf/plugins/class.db.php");
 include ("phpwf/plugins/class.wfmonitor.php");
 include ("phpwf/plugins/class.string.php");
-include ("phpwf/plugins/class.pagebuilder.php");
+//include ("phpwf/plugins/class.pagebuilder.php");
 include ("phpwf/plugins/class.objectapi.php");
-include ("phpwf/plugins/class.widgetapi.php");
-include ("phpwf/widgets/easytable.php");
-include ("phpwf/widgets/grouptable.php");
-include ("phpwf/widgets/childtable.php");
-include ("phpwf/widgets/table.php");
+//include ("phpwf/plugins/class.widgetapi.php");
+//include ("phpwf/widgets/easytable.php");
+//include ("phpwf/widgets/grouptable.php");
+//include ("phpwf/widgets/childtable.php");
+//include ("phpwf/widgets/table.php");
 
 
-include("phpwf/htmltags/all.php");
+//include("phpwf/htmltags/all.php");
 include("phpwf/types/class.simplelist.php");
 
 
@@ -42,7 +42,7 @@ class Application
 
       $this->Conf= $config;
 
-      if($_SERVER[HTTPS]=="on")
+      if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=="on")
 	$this->http = "https";
       else
 	$this->http = "http";
@@ -50,26 +50,26 @@ class Application
     
       $this->Secure         =  new Secure();   // empty $_GET, and $_POST so you
                                                 // have to need the secure layer always
-      $this->FormHandler    =  new FormHandler($this);
+      //$this->FormHandler    =  new FormHandler($this);
       $this->User           =  new User($this);
       $this->acl            =  new Acl($this);
       $this->WF             =  new phpWFAPI($this);
       $this->WFM            =  new WFMonitor($this);
-      $this->Tpl            =  new TemplateParser();
+      //$this->Tpl            =  new TemplateParser();
       $this->Page           =  new Page($this);
       $this->String         =  new String();
       $this->DatabaseForm   =  new DatabaseForm($this);
-      $this->PageBuilder    =  new PageBuilder($this);
+      //$this->PageBuilder    =  new PageBuilder($this);
       $this->ObjAPI	    =  new ObjectAPI($this);
-      $this->Widget	    =  new WidgetAPI($this);
-      $this->Table	    =  new Table($this);
+      //$this->Widget	    =  new WidgetAPI($this);
+      //$this->Table	    =  new Table($this);
 
-      $this->BuildNavigation = true;
+      //$this->BuildNavigation = true;
          
       if($this->Conf->WFdbname!="") 
         $this->DB             = new DB($this->Conf->WFdbhost,$this->Conf->WFdbname,$this->Conf->WFdbuser,$this->Conf->WFdbpass,$this);
 
-      $this->Tpl->ReadTemplatesFromPath("phpwf/widgets/templates/");
+      //$this->Tpl->ReadTemplatesFromPath("phpwf/widgets/templates/");
 
     }
 

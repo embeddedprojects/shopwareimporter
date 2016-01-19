@@ -37,14 +37,14 @@ class Session {
 
     if(!$this->app->acl->CheckTimeOut()){
       $this->check = false;
-      $this->reason = PLEASE_LOGIN;
+      $this->reason = 'PLEASE_LOGIN';
     } else {
       //benutzer ist schon mal erfolgreich angemeldet
       if($this->app->acl->Check($this->app->User->GetType(),$this->module,$this->action)){
 	$this->check =  true;
 	$this->app->calledWhenAuth($this->app->User->GetType());
       } else {
-	$this->reason = NO_PERMISSIONS;
+	$this->reason = 'NO_PERMISSIONS';
 	$this->check = false;
       }
 
