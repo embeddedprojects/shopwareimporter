@@ -845,7 +845,7 @@ Embedded Eagle Library
       case "nachnahme": $warenkorb[zahlungsweise] = "nachnahme"; break;
       case "Amazoncba": $warenkorb[zahlungsweise] = "Amazoncba"; break;
       case "sofortueberweisung": $warenkorb[zahlungsweise] = "sofortueberweisung"; break;
-      default: $warenkorb[zahlungsweise] = "unbekannt"; 
+      default: $warenkorb[zahlungsweise] = $result[data][payment][name]; 
     }
 
     //$warenkorb[lieferung] selbstabholer, versandunternehmen
